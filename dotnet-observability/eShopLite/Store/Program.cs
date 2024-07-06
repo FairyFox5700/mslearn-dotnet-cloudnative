@@ -2,7 +2,9 @@ using Store.Components;
 using Store.Services;
 
 var builder = WebApplication.CreateBuilder(args);
- 
+
+builder.Services.AddObservability("Store", builder.Configuration);
+
 builder.Services.AddSingleton<ProductService>();
 builder.Services.AddHttpClient<ProductService>(c =>
 {
@@ -15,7 +17,7 @@ builder.Services.AddHttpClient<ProductService>(c =>
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-// Add observability code here
+// Add logging
 
 
 var app = builder.Build();
@@ -35,5 +37,7 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+app.MapObservability();
 
 app.Run();
