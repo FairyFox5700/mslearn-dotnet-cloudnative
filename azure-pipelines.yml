@@ -1,7 +1,6 @@
 # Deploy to Azure Kubernetes Service
 # Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
 trigger:
 - main
 
@@ -17,6 +16,15 @@ variables:
   dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'
   imagePullSecret: 'acseshop121be0c-auth'
+  AZURE_CONTAINER_REGISTRY: 'acseshop121'
+  PRODUCT_CONTAINER_NAME: 'productservice'
+  STORE_CONTAINER_NAME: 'storeimage'
+  RESOURCE_GROUP: 'rg-eshop'
+  CLUSTER_NAME: 'aks-eshop'
+  PRODUCT_DEPLOYMENT_MANIFEST_PATH: './dotnet-kubernetes/backend-deploy.yml'
+  STORE_DEPLOYMENT_MANIFEST_PATH: './dotnet-kubernetes/frontend-deploy.yml'
+  PRODUCT_DOCKER_PATH: './Products/Dockerfile'
+  STORE_DOCKER_PATH: './Store/Dockerfile'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -35,14 +43,19 @@ stages:
       displayName: Build and push an image to container registry
       inputs:
         command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
+        repository: '$(PRODUCT_CONTAINER_NAME)'
+        Dockerfile: '$(PRODUCT_DOCKER_PATH)'
         containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
+        tags: '$(Build.SourceVersion)'
 
-    - upload: manifests
-      artifact: manifests
+    - task: Docker@2
+      displayName: 'Build and push frontend image to ACR'
+      inputs:
+        containerRegistry: $(dockerRegistryServiceConnection)
+        repository: '$(STORE_CONTAINER_NAME)'
+        command: 'buildAndPush'
+        Dockerfile: '$(STORE_DOCKER_PATH)'
+        tags: '$(Build.SourceVersion)'
 
 - stage: Deploy
   displayName: Deploy stage
@@ -76,4 +89,3 @@ stages:
                 $(imagePullSecret)
               containers: |
                 $(containerRegistry)/$(imageRepository):$(tag)
-
