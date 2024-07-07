@@ -1,54 +1,42 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: productsbackend
-    annotations:
-      linkerd.io/inject: enabled
+  name: productservice
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: productsbackend
-    spec:
-      containers:
-      - name: productsbackend
-        image: dockersupportbankweb/productsservice:latest
-        ports:
-        - containerPort: 80
-        env:
-        - name: ASPNETCORE_URLS
-          value: http://*:80
+        app: productservice
   selector:
     matchLabels:
-      app: productsbackend
+      app: productservice
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+        - name: productservice
+          image: acseshop121.azurecr.io/productservice:latest
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+            ports:
+              - containerPort: 8080
+                name: http
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: productsbackend
+  name: eshop-backend
 spec:
   type: NodePort
   ports:
-  - port: 80
-    targetPort: 80
-    nodePort: 32001
+    - port: 80
+      targetPort: 8080
   selector:
-    app: productsbackend
----
-apiVersion: linkerd.io/v1alpha2
-kind: ServiceProfile
-metadata:
-  name: backend
-  namespace: default
-spec:
-  routes:
-  - condition:
-      method: GET
-      pathRegex: /api/Product
-    name: GET /v1/products
-    isRetryable: true
-  retryBudget:
-    retryRatio: 0.2
-    minRetriesPerSecond: 10
-    ttl: 120s
+    app: productservice
