@@ -22,8 +22,9 @@ variables:
   CLUSTER_NAME: 'aks-eshop'
   PRODUCT_DEPLOYMENT_MANIFEST_PATH: './dotnet-kubernetes/backend-deploy.yml'
   STORE_DEPLOYMENT_MANIFEST_PATH: './dotnet-kubernetes/frontend-deploy.yml'
-  PRODUCT_DOCKER_PATH: './dotnet-kubernetes/Products/Dockerfile'
-  STORE_DOCKER_PATH: './dotnet-kubernetes/Store/Dockerfile'
+  PRODUCT_DOCKER_PATH: './Products/Dockerfile'
+  STORE_DOCKER_PATH: './Store/Dockerfile'
+  buildContext: dotnet-kubernetes
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -46,6 +47,7 @@ stages:
         Dockerfile: '$(PRODUCT_DOCKER_PATH)'
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: '$(Build.SourceVersion)'
+        buildContext: $(buildContext)
 
     - task: Docker@2
       displayName: 'Build and push frontend image to ACR'
