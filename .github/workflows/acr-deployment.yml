@@ -8,11 +8,14 @@ on:
 env:
   # Local environment variables used later in the workflow
   AZURE_CONTAINER_REGISTRY: 'acseshop121'
-  CONTAINER_NAME: 'productservice'
+  PRODUCT_CONTAINER_NAME: 'productservice'
+  STORE_CONTAINER_NAME: 'storeimage'
   RESOURCE_GROUP: 'rg-eshop'
   CLUSTER_NAME: 'aks-eshop'
-  DEPLOYMENT_MANIFEST_PATH: './backend-deploy.yml"'
-  DOCKER_PATH: './Products/Dockerfile'
+  PRODUCT_DEPLOYMENT_MANIFEST_PATH: './backend-deploy.yml'
+  STORE_DEPLOYMENT_MANIFEST_PATH: './frontend-deploy.yml'
+  PRODUCT_DOCKER_PATH: './Products/Dockerfile'
+  STORE_DOCKER_PATH: './Store/Dockerfile'
 
 jobs:
   buildImage:
@@ -31,10 +34,19 @@ jobs:
           creds: '${{ secrets.AZURE_CREDENTIALS }}'
 
       # Builds and pushes an image up to your Azure Container Registry
-      - name: Build and push image to ACR
+      - name: Build and push backend image to ACR
         working-directory: 'dotnet-kubernetes'
         run: |
-              az acr build --file ${{ env.DOCKER_PATH }} \
-                 --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }} \
+              az acr build --file ${{ env.PRODUCT_DOCKER_PATH }} \
+                 --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.PRODUCT_CONTAINER_NAME }}:${{ github.sha }} \
                  --registry ${{ env.AZURE_CONTAINER_REGISTRY }} \
                  --resource-group ${{ env.RESOURCE_GROUP }} .
+
+      - name: Build and push frontend image to ACR
+        working-directory: 'dotnet-kubernetes'
+        run: |
+              az acr build --file ${{ env.STORE_DOCKER_PATH }} \
+                 --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.STORE_CONTAINER_NAME }}:${{ github.sha }} \
+                 --registry ${{ env.AZURE_CONTAINER_REGISTRY }} \
+                 --resource-group ${{ env.RESOURCE_GROUP }} .
+                 
