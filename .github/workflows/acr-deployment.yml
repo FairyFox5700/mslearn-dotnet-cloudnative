@@ -83,9 +83,9 @@ jobs:
 
       # Deploys application based on given manifest file
       - name: Deploys products application
-        working-directory: 'dotnet-kubernetes'
         uses: Azure/k8s-deploy@v4
         with:
+          working-directory: 'dotnet-kubernetes'
           action: deploy
           manifests: ${{ env.PRODUCT_DEPLOYMENT_MANIFEST_PATH }}
           images: |
@@ -93,9 +93,9 @@ jobs:
           pull-images: false
 
       - name: Deploys store application
-        working-directory: 'dotnet-kubernetes'
         uses: Azure/k8s-deploy@v4
         with:
+          working-directory: 'dotnet-kubernetes'
           action: deploy
           manifests: ${{ env.STORE_DEPLOYMENT_MANIFEST_PATH }}
           images: |
