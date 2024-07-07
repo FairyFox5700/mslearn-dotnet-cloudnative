@@ -12,8 +12,8 @@ env:
   STORE_CONTAINER_NAME: 'storeimage'
   RESOURCE_GROUP: 'rg-eshop'
   CLUSTER_NAME: 'aks-eshop'
-  PRODUCT_DEPLOYMENT_MANIFEST_PATH: './backend-deploy.yml'
-  STORE_DEPLOYMENT_MANIFEST_PATH: './frontend-deploy.yml'
+  PRODUCT_DEPLOYMENT_MANIFEST_PATH: './dotnet-kubernetes/backend-deploy.yml'
+  STORE_DEPLOYMENT_MANIFEST_PATH: './dotnet-kubernetes/frontend-deploy.yml'
   PRODUCT_DOCKER_PATH: './Products/Dockerfile'
   STORE_DOCKER_PATH: './Store/Dockerfile'
 
@@ -85,7 +85,6 @@ jobs:
       - name: Deploys products application
         uses: Azure/k8s-deploy@v4
         with:
-          working-directory: 'dotnet-kubernetes'
           action: deploy
           manifests: ${{ env.PRODUCT_DEPLOYMENT_MANIFEST_PATH }}
           images: |
@@ -95,7 +94,6 @@ jobs:
       - name: Deploys store application
         uses: Azure/k8s-deploy@v4
         with:
-          working-directory: 'dotnet-kubernetes'
           action: deploy
           manifests: ${{ env.STORE_DEPLOYMENT_MANIFEST_PATH }}
           images: |
