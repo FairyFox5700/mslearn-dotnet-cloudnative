@@ -14,8 +14,6 @@ spec:
       containers:
         - name: storefrontend
           image: dockersupportbankweb/store:latest
-          ports:
-            - containerPort: 80
           resources:
             requests:
               cpu: 100m
@@ -23,9 +21,9 @@ spec:
             limits:
               cpu: 250m
               memory: 256Mi
-            ports:
-              - containerPort: 8080
-                name: http
+          ports:
+            - containerPort: 8080
+              name: http
           env:
             - name: ProductEndpoint
               value: http://eshop-backend
