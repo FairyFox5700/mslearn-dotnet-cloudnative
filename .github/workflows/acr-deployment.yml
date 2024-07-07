@@ -11,8 +11,8 @@ env:
   CONTAINER_NAME: 'productservice'
   RESOURCE_GROUP: 'rg-eshop'
   CLUSTER_NAME: 'aks-eshop'
-  DEPLOYMENT_MANIFEST_PATH: './dotnet-kubernetes/backend-deploy.yml"'
-  DOCKER_PATH: './dotnet-docker/Products/Dockerfile'
+  DEPLOYMENT_MANIFEST_PATH: './backend-deploy.yml"'
+  DOCKER_PATH: './Products/Dockerfile'
 
 jobs:
   buildImage:
@@ -32,5 +32,9 @@ jobs:
 
       # Builds and pushes an image up to your Azure Container Registry
       - name: Build and push image to ACR
+        working-directory: 'dotnet-kubernetes'
         run: |
-          az acr build --file ${{ env.DOCKER_PATH }} --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.RESOURCE_GROUP }} .
+              az acr build --file ${{ env.DOCKER_PATH }} \
+                 --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }} \
+                 --registry ${{ env.AZURE_CONTAINER_REGISTRY }} \
+                 --resource-group ${{ env.RESOURCE_GROUP }} .
