@@ -22,8 +22,8 @@ variables:
   CLUSTER_NAME: 'aks-eshop'
   PRODUCT_DEPLOYMENT_MANIFEST_PATH: './dotnet-kubernetes/backend-deploy.yml'
   STORE_DEPLOYMENT_MANIFEST_PATH: './dotnet-kubernetes/frontend-deploy.yml'
-  PRODUCT_DOCKER_PATH: './Products/Dockerfile'
-  STORE_DOCKER_PATH: './Store/Dockerfile'
+  PRODUCT_DOCKER_PATH: './dotnet-kubernetes/Products/Dockerfile'
+  STORE_DOCKER_PATH: './dotnet-kubernetes/Store/Dockerfile'
   buildContext: dotnet-kubernetes
 
   # Agent VM image name
