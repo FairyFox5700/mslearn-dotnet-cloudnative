@@ -49,7 +49,7 @@ jobs:
                  --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.STORE_CONTAINER_NAME }}:${{ github.sha }} \
                  --registry ${{ env.AZURE_CONTAINER_REGISTRY }} \
                  --resource-group ${{ env.RESOURCE_GROUP }} .
-deploy:
+  deploy:
     permissions:
       actions: read
       contents: read
