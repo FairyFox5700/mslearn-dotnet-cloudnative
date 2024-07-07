@@ -57,6 +57,7 @@ stages:
         command: 'buildAndPush'
         Dockerfile: '$(STORE_DOCKER_PATH)'
         tags: '$(Build.SourceVersion)'
+        buildContext: $(buildContext)
 
 - stage: Deploy
   displayName: Deploy stage
